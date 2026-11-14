@@ -352,6 +352,15 @@ sessionReadApi:
 # default. Run it with exactly one replica. Its ServiceAccount must carry the
 # Pod Identity association Terraform creates for the search indexer role.
 searchIndexer:
+  # Per-session index limits. Unset keeps the image defaults (64 MiB, 100000
+  # events, 500000 rows). A session above them is marked partial, and one
+  # partial session makes the read API refuse every workspace search. Raise
+  # them only with an image that reads SEARCH_INDEX_MAX_SCOPE_BYTES and with
+  # resources.limits.memory sized for it. Maximum: 268435456 / 1000000 / 1000000.
+  limits:
+    maxScopeBytes: null
+    maxScopeEvents: null
+    maxRows: null
   # Legacy per-component fallback. Prefer global.scrubEngine.readerMaxRuleset
   # so every services-image workload changes in one reader-first phase.
   readerMaxRuleset: null
