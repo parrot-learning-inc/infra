@@ -44,6 +44,13 @@
 {{- with $c.extraEnv }}
 {{- toYaml . | nindent 0 }}
 {{- end }}
+{{- with $c.limits }}
+{{- range $key, $name := dict "maxScopeBytes" "SEARCH_INDEX_MAX_SCOPE_BYTES" "maxScopeEvents" "SEARCH_INDEX_MAX_SCOPE_EVENTS" "maxRows" "SEARCH_INDEX_MAX_ROWS" }}
+{{- with index $c.limits $key }}
+- { name: {{ $name }}, value: {{ int64 . | quote }} }
+{{- end }}
+{{- end }}
+{{- end }}
 {{- if eq $c.search.backend "opensearch" }}
 - { name: SEARCH_INDEX_OPENSEARCH_URL, value: {{ $c.search.opensearch.url | quote }} }
 - { name: SEARCH_INDEX_OPENSEARCH_AUTH, value: sigv4 }
